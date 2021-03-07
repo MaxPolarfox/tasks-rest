@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tasks_rest
+spec:
+  containers:
+    - name: tasks_rest
+      image: tasks_rest
+      imagePullPolicy: Never
