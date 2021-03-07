@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/MaxPolarfox/tasks-rest/pkg/tasks_rest"
 	"io/ioutil"
 	"os"
 
 	"github.com/MaxPolarfox/goTools/mongoDB"
-	"github.com/MaxPolarfox/tasks/pkg/tasks_rest"
-	"github.com/MaxPolarfox/tasks/pkg/types"
+	"github.com/MaxPolarfox/tasks-rest/pkg/types"
 )
 
 const ServiceName = "tasks_rest"

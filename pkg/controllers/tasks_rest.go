@@ -11,7 +11,7 @@ import (
 
 	"github.com/MaxPolarfox/goTools/errors"
 	"github.com/MaxPolarfox/goTools/mongoDB"
-	"github.com/MaxPolarfox/tasks/pkg/types"
+	"github.com/MaxPolarfox/tasks-rest/pkg/types"
 )
 
 type RestTasksController struct {

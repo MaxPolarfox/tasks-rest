@@ -1,12 +1,12 @@
 package tasks_rest
 
 import (
-	"github.com/MaxPolarfox/tasks/pkg/controllers"
+	"github.com/MaxPolarfox/tasks-rest/pkg/controllers"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 
 	"github.com/MaxPolarfox/goTools/mongoDB"
-	"github.com/MaxPolarfox/tasks/pkg/types"
+	"github.com/MaxPolarfox/tasks-rest/pkg/types"
 )
 
 //TasksServiceGrpcImpl is a implementation of TasksService Grpc Service.

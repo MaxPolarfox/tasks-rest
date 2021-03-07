@@ -13,7 +13,7 @@ import (
 	"github.com/gojektech/heimdall/v6/httpclient"
 
 	goToolsClient "github.com/MaxPolarfox/goTools/client"
-	"github.com/MaxPolarfox/tasks/pkg/types"
+	"github.com/MaxPolarfox/tasks-rest/pkg/types"
 )
 
 type Client interface {
