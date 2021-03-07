@@ -29,7 +29,6 @@ func main() {
 	s.Start()
 }
 
-
 // loadEnvironmentConfig will use the environment string and concatenate to a proper config file to use
 func loadEnvironmentConfig(env string) types.Options {
 	configFile := "config/" + ServiceName + "/" + env + ".json"

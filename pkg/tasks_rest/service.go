@@ -35,7 +35,6 @@ func NewService(options types.Options, tasksCollection mongoDB.Mongo) *Service {
 	return &Service{
 		options: options,
 		db:      DB{tasksCollection},
-		Router: router,
+		Router:  router,
 	}
 }
-

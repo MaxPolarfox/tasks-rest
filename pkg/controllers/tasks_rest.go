@@ -9,12 +9,13 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"go.mongodb.org/mongo-driver/bson"
 
+	"github.com/MaxPolarfox/goTools/errors"
 	"github.com/MaxPolarfox/goTools/mongoDB"
 	"github.com/MaxPolarfox/tasks/pkg/types"
 )
 
 type RestTasksController struct {
-	db      DB
+	db DB
 }
 
 type DB struct {
@@ -30,7 +31,7 @@ func NewRestTasksController(tasksCollection mongoDB.Mongo) *RestTasksController 
 }
 
 // CreateTask  POST /rest/tasks
-func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Request)  {
+func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Request) {
 	var err error
 	ctx := req.Context()
 	metricName := "RestTasksController.GetAllTasks"
@@ -41,12 +42,12 @@ func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Reque
 	err = json.NewDecoder(req.Body).Decode(&createTaskBody)
 	if err != nil {
 		log.Println(metricName+".Decode.Body", "err", err)
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	newTask := types.Task{
-		ID: taskID,
+		ID:   taskID,
 		Data: createTaskBody.Data,
 	}
 
@@ -54,7 +55,7 @@ func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Reque
 	_, err = s.db.tasks.InsertOne(ctx, newTask)
 	if err != nil {
 		log.Println(metricName+"db.tasks.InsertOne", "err", err)
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -63,7 +64,7 @@ func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Reque
 	json, err := json.Marshal(createdTaskRes)
 	if err != nil {
 		log.Println(metricName+"json.Marshal", "err", err)
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -73,7 +74,7 @@ func (s *RestTasksController) CreateTask(rw http.ResponseWriter, req *http.Reque
 }
 
 // GetAllTasks GET /rest/tasks
-func (s *RestTasksController) GetAllTasks(rw http.ResponseWriter, req *http.Request)  {
+func (s *RestTasksController) GetAllTasks(rw http.ResponseWriter, req *http.Request) {
 	var err error
 	ctx := req.Context()
 	metricName := "RestTasksController.GetAllTasks"
@@ -84,21 +85,21 @@ func (s *RestTasksController) GetAllTasks(rw http.ResponseWriter, req *http.Requ
 	cursor, err := s.db.tasks.Find(ctx, filter)
 	if err != nil {
 		log.Println(metricName+".db.tasks.Find", "err", "err")
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	err = cursor.All(ctx, &tasks)
 	if err != nil {
 		log.Println(metricName+".cursor.All", "err", "err")
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	json, err := json.Marshal(tasks)
 	if err != nil {
 		log.Println(metricName+".json.Marshal", "tasks", tasks, "err", err)
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -121,40 +122,10 @@ func (s *RestTasksController) DeleteTask(rw http.ResponseWriter, req *http.Reque
 	_, err = s.db.tasks.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Println(metricName+".db.tasks.DeleteOne", "err", "err")
-		respondWithError(rw, http.StatusInternalServerError, err.Error())
+		errors.RespondWithError(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(http.StatusNoContent)
-}
-
-// Error is the error object for an apiclients request that includes the http
-// status code in response
-type Error struct {
-	StatusCode int    `json:"statusCode,omitempty"`
-	Message    string `json:"message"`
-}
-
-func respondWithError(rw http.ResponseWriter, statusCode int, message string) {
-
-	response := Error{
-		// we will omit StatusCode in the body, because one can grab it from the response itself
-		Message: message,
-	}
-	js, err := json.Marshal(&response)
-	if err != nil {
-		failedToMarshalError := Error{
-			Message: err.Error(),
-		}
-		failedJS, _ := json.Marshal(&failedToMarshalError)
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusInternalServerError)
-		rw.Write(failedJS)
-		return
-	}
-
-	rw.Header().Set("Content-Type", "application/json")
-	rw.WriteHeader(statusCode)
-	rw.Write(js)
 }

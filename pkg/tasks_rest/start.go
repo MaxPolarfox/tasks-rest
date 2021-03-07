@@ -3,12 +3,12 @@ package tasks_rest
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-	"log"
 )
 
 // Serve starts the HTTP server, blocking until the server exits.
