@@ -1,4 +1,4 @@
-module github.com/MaxPolarfox/tasks
+module github.com/MaxPolarfox/tasks-rest
 
 go 1.13
 
