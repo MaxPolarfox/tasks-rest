@@ -1,0 +1,37 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tasks-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasks-rest
+  template:
+    metadata:
+      name: tasks-rest
+      labels:
+        app: tasks-rest
+    spec:
+      containers:
+        - name: tasks-rest
+          image: maksimpesetski/tasks_rest:d351fed
+          imagePullPolicy: Always
+          ports:
+            - name: tasks-rest
+              containerPort: 3006
+          env:
+            - name: APP_ENV
+              value: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasks-rest
+spec:
+  selector:
+    app: tasks-rest
+  ports:
+    - protocol: TCP
+      port: 3006
+      targetPort: 3006
